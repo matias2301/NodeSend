@@ -38,7 +38,7 @@ const createUser = async (req, res) => {
             });            
         }
 
-        res.json({
+        return res.json({
             status: 200,
             userCreated,
             msj: "User created successfully"

@@ -4,6 +4,10 @@ const authController = require('../controllers/auth.controller');
 const { check } = require('express-validator');
 
 router.post('/',
+    [
+        check('email','Enter a valid email').isEmail(),
+        check('password','Verify the password').not().isEmpty(),
+    ],
     authController.authenticateUser
 );
 
