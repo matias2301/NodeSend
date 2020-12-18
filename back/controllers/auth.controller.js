@@ -4,9 +4,9 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config({ path: 'variables.env' });
 const { validationResult } = require('express-validator');
 
-const authenticateUser = async (req, res ) => {
+const authenticateUser = async (req, res, next ) => {
 
-    //verify if there's any errors
+    //verify if there's any errors    
     const errors = validationResult(req);
     if( !errors.isEmpty() ) return res.status(400).json({ errors: errors.array() });
 
@@ -22,17 +22,13 @@ const authenticateUser = async (req, res ) => {
         }
 
         if(!userDB){
-            return res.json({
-                status: 400,
-                msj: "user or password are invalid",                
-            });
+            res.status(401).json({msj : 'Email or Password Incorrect'});
+            return next();
         }
 
         if(!bcrypt.compareSync(password, userDB.password) ){
-            return res.json({
-                status: 400,
-                msj: "user or password are invalid",                
-            });
+            res.status(401).json({msj : 'Email or Password Incorrect'});
+            return next();
         }
 
         const token = jwt.sign({
@@ -40,7 +36,7 @@ const authenticateUser = async (req, res ) => {
         }, process.env.SEED, {
             expiresIn: '8h'
         });
-
+        
         res.json({
             status: 200,
             user: userDB,
@@ -51,7 +47,7 @@ const authenticateUser = async (req, res ) => {
 
 }
 
-const getUserAuth = async (req, res) => {
+const getUserAuth = async (req, res) => {    
     res.json({ user: req.user });
 }
 

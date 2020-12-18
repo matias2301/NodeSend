@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/auth.controller');
 const { check } = require('express-validator');
+const authentication = require('../middleware/authetication');
 
 router.post('/',
     [
@@ -12,6 +13,7 @@ router.post('/',
 );
 
 router.get('/',
+    authentication,
     authController.getUserAuth
 );
 

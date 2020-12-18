@@ -8,13 +8,13 @@ const fs = require('fs');
 |--------------------------------------------------
 */
 
-const uploadFile = async (req, res, next) => {
+const uploadFile = async (req, res, next) => {    
 
     const configMulter = {
         limits: { fileSize: req.user ? 1024 * 1024 * 10 : 1024 * 1024 },
         storage: fileStorage = multer.diskStorage({
             destination: (req, file, cb) => {
-                cb(null, __direname+'/../uploads')
+                cb(null, __dirname+'/../uploads')
             },
             filename: (req, file, cb) => {
                 const extension = file.originalname.substring(file.originalname.lastIndexOf('.').file.originalname.length)
@@ -23,10 +23,9 @@ const uploadFile = async (req, res, next) => {
         })
     }
     
-    const upload = multer(configMulter).single('file');
+    const upload = multer(configMulter).single('filename');
     
     upload( req, res, async(error) => {
-        
         if(!error) res.json( {file: req.file.filename} );
 
         return next();
