@@ -34,6 +34,8 @@ const port = process.env.PORT || 4000;
 //enabled body-parser
 app.use(express.json());
 
+app.use( express.static('uploads') );
+
 //users routes
 app.use('/api/users', require('./routes/users'));
 app.use('/api/auth', require('./routes/auth'));

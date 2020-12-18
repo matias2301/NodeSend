@@ -36,7 +36,8 @@ const authReducer = ( state, action ) => {
         case AUTHENTICATED_USER:            
             return {
             ...state,
-            userLogged: action.payload
+            userLogged: action.payload,
+            auth: true
         }
 
         case CLOSE_SESSION:

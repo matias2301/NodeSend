@@ -9,7 +9,10 @@ import {
     CREATE_LINK_SUCCESS,
     CREATE_LINK_ERROR,
     CLEAN_ALERT,
-    SHOW_ALERT
+    SHOW_ALERT,
+    CLEAN_STATE,
+    ADD_PASSWORD,
+    ADD_DOWNLOADS
 } from '../../types';
 import axiosClient from '../../config/axios';
 
@@ -19,7 +22,11 @@ const AppState = ({ children }) => {
         filesMsj: null,
         hashName: '',
         originalName: '',
-        loading: null
+        loading: null,
+        downloads: 1,
+        password: '',
+        author: null,
+        url: ''
     }
 
     const [state, dispatch] = useReducer(appReducer, initialState);
@@ -64,6 +71,51 @@ const AppState = ({ children }) => {
         }
     }
 
+    // create a link to download the updated file
+    const createLink = async () => {
+        const data = {
+            name: state.hashName,
+            originalName: state.originalName,
+            downloads: state.downloads,
+            password: state.password,
+            author: state.author
+        }
+
+        try {
+            const response = await axiosClient.post('/api/links', data );
+            
+            dispatch({
+                type: CREATE_LINK_SUCCESS,
+                payload: response.data.msg
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    // clean all state
+    const cleanState = () => {
+        dispatch({
+            type: CLEAN_STATE
+        });
+    }
+
+    // add User Password
+    const addPassword = value => {
+        dispatch({
+            type: ADD_PASSWORD,
+            payload: value
+        });
+    }
+
+    // add numbers of downloads
+    const addDownloads = value => {
+        dispatch({
+            type: ADD_DOWNLOADS,
+            payload: value
+        });
+    }
+
     return (
         <appContext.Provider
             value={{
@@ -71,8 +123,16 @@ const AppState = ({ children }) => {
                 hashName: state.hashName,
                 originalName: state.originalName,
                 loading: state.loading,
+                downloads: state.downloads,
+                password:  state.password,
+                author: state.author,
+                url: state.url,
                 showAlert,
-                uploadFile                
+                uploadFile,
+                createLink,
+                cleanState,
+                addPassword,
+                addDownloads
             }}
         >
             { children }

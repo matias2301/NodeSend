@@ -15,8 +15,7 @@ const Index = () => {
 
   // Get files messages errors
   const AppContext = useContext( appContext );
-  const { filesMsj } = AppContext;
-  const url = undefined;
+  const { filesMsj, url } = AppContext;  
   
   useEffect(() => {
     const token = localStorage.getItem('token');

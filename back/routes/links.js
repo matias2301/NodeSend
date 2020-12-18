@@ -8,15 +8,24 @@ const auth = require('../middleware/authetication');
 router.post('/',
     [
         check('name', 'upload a file').not().isEmpty(),
-        check('original_name', 'upload a file').not().isEmpty(),
+        check('originalName', 'upload a file').not().isEmpty(),
     ],
     auth,
     linksController.newLink
 );
 
+router.get('/',
+    linksController.getAllLinks
+);
+
 router.get('/:url',
+    linksController.hasPass,
     linksController.getLink,
-    fileController.deleteFile
+);
+
+router.post('/:url',
+    linksController.verifyPassword,
+    linksController.getLink,
 );
 
 module.exports = router;

@@ -1,3 +1,4 @@
+const Link = require('../models/Link.model');
 const multer = require('multer');
 const shortid = require('shortid');
 const fs = require('fs');
@@ -7,7 +8,6 @@ const fs = require('fs');
 | UPLOAD FILES
 |--------------------------------------------------
 */
-
 const uploadFile = async (req, res, next) => {    
 
     const configMulter = {
@@ -17,7 +17,7 @@ const uploadFile = async (req, res, next) => {
                 cb(null, __dirname+'/../uploads')
             },
             filename: (req, file, cb) => {
-                const extension = file.originalname.substring(file.originalname.lastIndexOf('.').file.originalname.length)
+                const extension = file.originalname.substring(file.originalname.lastIndexOf('.'), file.originalname.length)
                 cb( null, `${shortid.generate()}${extension}` );
             }
         })
@@ -32,6 +32,11 @@ const uploadFile = async (req, res, next) => {
     });
 }
 
+/**
+|--------------------------------------------------
+|  DELETE FILE
+|--------------------------------------------------
+*/
 const deleteFile = async (req, res) => {
 
     try {
@@ -41,7 +46,35 @@ const deleteFile = async (req, res) => {
     }
 }
 
+/**
+|--------------------------------------------------
+|  DOWNLOAD FILE
+|--------------------------------------------------
+*/
+const downloadFile = async (req, res, next) => {
+
+    const { file } = req.params;
+    const link = await Link.findOne({ name: file });
+
+    const fileDownload = __dirname + '/../uploads/' + file;
+    res.download(fileDownload);
+    
+    const { downloads, name, id } = link;
+
+    if( downloads === 1 ) {
+        req.file = name;
+
+        await Link.findOneAndRemove(id);
+        next();
+
+    } else {
+        link.downloads--;
+        await link.save();
+    }
+}
+
 module.exports = {
     uploadFile,
-    deleteFile
+    deleteFile,
+    downloadFile
 }
