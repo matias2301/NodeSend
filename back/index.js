@@ -9,14 +9,10 @@ const app = express();
 //connect to nodeSend DB
 connectDB();
 
-// Habilitar Cors
-// const opcionesCors = {
-//     origin: process.env.FRONTEND_URL
-// }
-// app.use( cors(opcionesCors) );
-
+// Configure Cross Origin
 app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+    // res.header("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Credentials", "true");
     res.header(
       "Access-Control-Allow-Headers",
@@ -25,8 +21,9 @@ app.use((req, res, next) => {
     res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
     next();
   });
-  
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+
+// Habilitar Cors
+app.use(cors({origin: process.env.FRONT_URL}));
 
 //app port
 const port = process.env.PORT || 4000;
@@ -44,5 +41,5 @@ app.use('/api/files', require('./routes/files'));
 
 //listen port
 app.listen( port, '0.0.0.0', () => {
-    console.log(`Listening port ${port}`)
+    console.warn(`Listening port ${port}`)    
 });
